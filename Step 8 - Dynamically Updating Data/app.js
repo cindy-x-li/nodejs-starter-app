@@ -5,7 +5,7 @@
 */
 var express = require('express');   // We are using the express library for the web server
 var app     = express();            // We need to instantiate an express object to interact with the server in our code
-PORT        = 9124;                 // Set a port number at the top so it's easy to change in the future
+PORT        = 1313;                 // Set a port number at the top so it's easy to change in the future
 
 // app.js
 const { engine } = require('express-handlebars');
@@ -210,11 +210,23 @@ app.put('/put-person-ajax', function(req,res,next){
   let homeworld = parseInt(data.homeworld);
   let person = parseInt(data.fullname);
 
-  queryUpdateWorld = `UPDATE bsg_people SET homeworld = ? WHERE bsg_people.id = ?`;
-  selectWorld = `SELECT * FROM bsg_planets WHERE id = ?`
+  let age = parseInt(data.age);
+    if (isNaN(age))
+    {
+        age = 'NULL'
+    }
+
+  let completeRes = {
+    age: ageValue,
+    planets: plantsRow
+  }
+
+  updatePersonQuery = `UPDATE bsg_people SET homeworld = ?, age = ? WHERE bsg_people.id = ?`;
+  selectNewAge = `SELECT age from bsg_people WHERE bsg_people.id = ?`;
+  selectWorld = `SELECT * FROM bsg_planets WHERE id = ?`;
 
         // Run the 1st query
-        db.pool.query(queryUpdateWorld, [homeworld, person], function(error, rows, fields){
+        db.pool.query(updatePersonQuery, [homeworld, age, person], function(error, rows, fields){
             if (error) {
 
             // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
@@ -222,8 +234,7 @@ app.put('/put-person-ajax', function(req,res,next){
             res.sendStatus(400);
             }
 
-            // If there was no error, we run our second query and return that data so we can use it to update the people's
-            // table on the front-end
+            // If there was no error, we run our second query and return that data so we can use it to update the people's table on the front-end
             else
             {
                 // Run the second query

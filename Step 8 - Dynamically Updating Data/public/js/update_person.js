@@ -11,10 +11,12 @@ updatePersonForm.addEventListener("submit", function (e) {
     // Get form fields we need to get data from
     let inputFullName = document.getElementById("mySelect");
     let inputHomeworld = document.getElementById("input-homeworld-update");
+    let inputAge = document.getElementById("input-age-update");
 
     // Get the values from the form fields
     let fullNameValue = inputFullName.value;
     let homeworldValue = inputHomeworld.value;
+    let ageValue = inputAge.value;
     
     // currently the database table for bsg_people does not allow updating values to NULL
     // so we must abort if being bassed NULL for homeworld
@@ -29,6 +31,7 @@ updatePersonForm.addEventListener("submit", function (e) {
     let data = {
         fullname: fullNameValue,
         homeworld: homeworldValue,
+        age: ageValue
     }
     
     // Setup our AJAX request
@@ -43,6 +46,7 @@ updatePersonForm.addEventListener("submit", function (e) {
             // Add the new data to the table
             updateRow(xhttp.response, fullNameValue);
 
+            inputAge.value = '';
         }
         else if (xhttp.readyState == 4 && xhttp.status != 200) {
             console.log("There was an error with the input.")
@@ -57,6 +61,7 @@ updatePersonForm.addEventListener("submit", function (e) {
 
 function updateRow(data, personID){
     let parsedData = JSON.parse(data);
+    console.log(parsedData);
     
     let table = document.getElementById("people-table");
 
@@ -69,10 +74,16 @@ function updateRow(data, personID){
             let updateRowIndex = table.getElementsByTagName("tr")[i];
 
             // Get td of homeworld value
-            let td = updateRowIndex.getElementsByTagName("td")[3];
+            let tdHomeworld = updateRowIndex.getElementsByTagName("td")[3];
 
             // Reassign homeworld to our value we updated to
-            td.innerHTML = parsedData[0].name; 
+            tdHomeworld.innerHTML = parsedData[0].name;
+            
+            // Get td of age value
+            let tdAge = updateRowIndex.getElementsByTagName("td")[4];
+
+            // Reassign age to our value we updated to
+            tdAge.innerHTML = parsedData[0].age; 
        }
     }
 }
