@@ -31,7 +31,7 @@ updatePersonForm.addEventListener("submit", function (e) {
     let data = {
         fullname: fullNameValue,
         homeworld: homeworldValue,
-        age: ageValue
+        //age: ageValue
     }
     
     // Setup our AJAX request
@@ -77,13 +77,13 @@ function updateRow(data, personID){
             let tdHomeworld = updateRowIndex.getElementsByTagName("td")[3];
 
             // Reassign homeworld to our value we updated to
-            tdHomeworld.innerHTML = parsedData[0].name;
+            tdHomeworld.innerHTML = parsedData.planets[0].name;
             
             // Get td of age value
             let tdAge = updateRowIndex.getElementsByTagName("td")[4];
 
             // Reassign age to our value we updated to
-            tdAge.innerHTML = parsedData[0].age; 
+            tdAge.innerHTML = parsedData.personUpdated[0].age; 
        }
     }
 }

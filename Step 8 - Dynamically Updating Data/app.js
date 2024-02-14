@@ -217,8 +217,8 @@ app.put('/put-person-ajax', function(req,res,next){
     }
 
   let completeRes = {
-    age: ageValue,
-    planets: plantsRow
+    newAge: null,
+    planets: null
   }
 
   updatePersonQuery = `UPDATE bsg_people SET homeworld = ?, age = ? WHERE bsg_people.id = ?`;
@@ -238,13 +238,25 @@ app.put('/put-person-ajax', function(req,res,next){
             else
             {
                 // Run the second query
-                db.pool.query(selectWorld, [homeworld], function(error, rows, fields) {
+                db.pool.query(selectNewAge, [person], function(error, rows, fields) {
         
                     if (error) {
                         console.log(error);
                         res.sendStatus(400);
                     } else {
-                        res.send(rows);
+                        //res.send(rows);
+                        completeRes.newAge = rows;
+
+                        // Run the second query
+                        db.pool.query(selectWorld, [homeworld], function(error, rows, fields) {
+                        if (error) {
+                            console.log(error);
+                            res.sendStatus(400);
+                        } else {
+                            completeRes.planets = rows;
+                            res.send(completeRes);
+                        }
+                })
                     }
                 })
             }
